@@ -93,7 +93,6 @@ internal fun Fragment.getTrackProperties(): Map<String, Any> {
   return properties
 }
 
-@Suppress("UNUSED_PARAMETER")
 internal fun View.getTrackProperties(ev: MotionEvent?): Map<String, Any> {
   // 首先获取元素本身的属性
   val properties = HashMap<String, Any>()
@@ -115,6 +114,17 @@ internal fun View.getTrackProperties(ev: MotionEvent?): Map<String, Any> {
   return properties
 }
 
+/** 根据枚举类型来计算上报接口时使用的模式 */
+internal fun mode(): Int {
+  return when (Tracker.mode) {
+    TrackerMode.DEBUG_ONLY -> 1
+    TrackerMode.DEBUG_TRACK -> 2
+    else -> {
+      3
+    }
+  }
+}
+
 /**
  * 对事件进行统计
  *
@@ -123,7 +133,7 @@ internal fun View.getTrackProperties(ev: MotionEvent?): Map<String, Any> {
  * @param foreground 当前事件是否为切换到前台
  */
 internal fun trackEvent(event: TrackerEvent, background: Boolean = false,
-    foreground: Boolean = false) {
+                        foreground: Boolean = false) {
   // 此处尝试对数据进行上报
   // 具体的上报策略由TrackerService掌控
   TrackerService.report(event, background, foreground)
