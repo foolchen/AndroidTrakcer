@@ -47,7 +47,7 @@ object TrackerService {
     if (Tracker.mode == TrackerMode.RELEASE) {
       // 如果为release模式，则此处需要考虑同步、批量上传等处理
       // 首先将事件添加到事件列表中
-      mEvents.add(event)
+      addEvent(event)
       // 然后判断事件数量是否达到了上传的阈值
       if (mEvents.size >= threshold() || background || foreground) {
         // 如果达到了阈值，则进行后续操作
@@ -147,6 +147,14 @@ object TrackerService {
   @Synchronized
   private fun addEvents(events: List<TrackerEvent>) {
     mEvents.addAll(events)
+    // 在添加到列表中后，根据时间对所有的时间进行排序
+    mEvents.sortBy { it.time }
+  }
+
+  /** 将一个事件添加到事件列表中，该操作为同步操作 */
+  @Synchronized
+  private fun addEvent(event: TrackerEvent) {
+    mEvents.add(event)
     // 在添加到列表中后，根据时间对所有的时间进行排序
     mEvents.sortBy { it.time }
   }
